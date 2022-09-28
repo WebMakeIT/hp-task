@@ -1,0 +1,27 @@
+version: "3.5"
+
+services:
+    web:
+      container_name: task_web
+      image: php:8.1-apache
+      build: ./
+      volumes:
+        - ./:/var/www/html/
+      working_dir: /var/www/html
+      ports:
+        - 80:80
+      depends_on: 
+        - db  
+    db:
+      container_name: task_db
+      image: mysql:8.0
+      restart: unless-stopped
+      environment:
+          MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+          MYSQL_DATABASE: ${MYSQL_DATABASE}
+          MYSQL_USER: ${MYSQL_USER}
+          MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      ports:
+          - 3306:3306
+      volumes:
+          - ./task.sql:/docker-entrypoint-initdb.d/dump.sql
